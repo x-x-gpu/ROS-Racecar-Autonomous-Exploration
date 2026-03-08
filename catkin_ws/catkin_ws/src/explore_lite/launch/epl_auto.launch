@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<launch>
+  <!--<arg name="world_name" default="room2" />-->
+  <arg name="world_name" default="venue" />
+  <!-- <arg name="world_name" default="yjy" /> -->
+  <arg name="gui" default="false" />
+  <arg name="run_camera" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find bringup)/worlds/$(arg world_name).world"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+
+  <node pkg="racecar_control" type="nav_sim.py" name="nav_sim_contral" />
+
+  <arg name="robot_name" default="racecar"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find racecar_description)/urdf/$(arg robot_name).xacro'" />
+  <node name="racecar_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" 
+      args="-urdf -param robot_description -model racecar 
+            -x -0.055830
+            -y -7.50000
+            -z 0.050000
+            -Y 1.632827" />
+  
+  <include file="$(find racecar_control)/launch/racecar_control.launch" ns="/"/>
+  <include file="$(find cartographer_ros)/launch/demo_revo_lds.launch"/>
+  <!-- <include file="$(find explore_lite)/launch/slam.launch">
+    <arg name="namespace" value=""/>
+  </include>  -->
+    <include file="$(find explore_lite)/launch/navi.launch">
+    <arg name="namespace" value=""/>
+  </include> 
+
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find explore_lite)/include/simple.rviz">
+</node>
+
+<!-- <node pkg="explore_lite" type="navigator.py" name="navigator"/> -->
+<!-- <node pkg="explore_lite" type="recorder.py" name="recorder"/> -->
+
+<node pkg="explore_lite" type="send_4.py" name="send4"/>
+<node pkg="explore_lite" type="vertex_building" name="vertex_building"/>
+<include file="$(find explore_lite)/launch/explore.launch" />
+<node pkg="explore_lite" type="end_handle.py" name="endhandle"/>
+<!-- rosrun map_server map_saver -f ~/map/my_map -->
+
+</launch>
+
+
+

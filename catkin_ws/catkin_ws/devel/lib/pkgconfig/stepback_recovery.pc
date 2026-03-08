@@ -1,0 +1,8 @@
+prefix=/home/admin/catkin_ws/devel
+
+Name: stepback_recovery
+Description: Description of stepback_recovery
+Version: 0.0.1
+Cflags: -I/home/admin/catkin_ws/src/stepback_recovery/include
+Libs: -L${prefix}/lib -lstepback_recovery
+Requires: roscpp pluginlib
